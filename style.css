@@ -1,0 +1,222 @@
+body {
+    margin: 0; padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+
+  header {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-weight: 700;
+    font-size: 2rem;
+    color: #007bff;
+    user-select: none;
+  }
+
+ 
+  .container {
+    flex: 1;
+    display: flex;
+    padding: 30px;
+    gap: 40px;
+    max-width: 1200px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+  
+
+  .produtos {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+    gap: 25px;
+  }
+
+
+  .produto {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .produto:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+  .produto img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
+  .produto h3 {
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .produto p {
+    margin: 0 0 12px;
+    color: #666;
+    font-size: 0.9rem;
+    min-height: 40px;
+    text-align: center;
+  }
+  .produto button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  .produto button:hover {
+    background-color: #0056b3;
+  }
+
+
+  .carrinho-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    padding: 20px;
+    z-index: 1000;
+    font-size: 14px;
+  }
+  .carrinho-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .carrinho-header img {
+    width: 30px;
+    height: 30px;
+  }
+  .carrinho-header h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .item-carrinho {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+  .item-carrinho span {
+    flex-grow: 1;
+  }
+  .item-carrinho button {
+    background-color: #dc3545;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .item-carrinho button:hover {
+    background-color: #a71d2a;
+  }
+  .total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 15px;
+    text-align: right;
+  }
+
+
+  .modal {
+    position: fixed;
+    top: 0; left: 0; right:0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+  }
+  .modal.active {
+    display: flex;
+  }
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    padding: 25px;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+  .modal-content img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 20px;
+  }
+  .modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+  .modal-content p {
+    color: #555;
+    margin-bottom: 20px;
+  }
+  .modal-content button {
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 12px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  .modal-content button:hover {
+    background-color: #1e7e34;
+  }
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #dc3545;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    line-height: 0;
+    transition: background-color 0.3s ease;
+  }
+  .close-btn:hover {
+    background-color: #a71d2a;
+  }

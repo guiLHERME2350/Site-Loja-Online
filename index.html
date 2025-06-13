@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loja Online</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<header>Loja Online</header>
+
+<div class="container">
+  <div class="produtos" id="produtos"></div>
+</div>
+
+<div class="carrinho-container" id="carrinho-container">
+  <div class="carrinho-header">
+    <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Carrinho" />
+    <h2>Carrinho</h2>
+  </div>
+  <div id="carrinho-itens"></div>
+  <div class="total" id="carrinho-total">Total: R$ 0,00</div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close-btn" id="modal-close">&times;</button>
+    <img id="modal-img" src="" alt="Imagem do produto" />
+    <h3 id="modal-nome"></h3>
+    <p id="modal-desc"></p>
+    <p><strong>Preço: </strong>R$ <span id="modal-preco"></span></p>
+    <button id="modal-adicionar">Adicionar ao Carrinho</button>
+  </div>
+</div>
+
+<script>
+  const produtos = [
+    {
+      id: 1,
+      nome: "Tênis Esportivo",
+      descricao: "Tênis confortável para corrida e atividades físicas.",
+      preco: 150.99,
+      imagem: "https://images.unsplash.com/photo-1528701800489-276a1b3f1e72?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 2,
+      nome: "Relógio Digital",
+      descricao: "Relógio resistente à água, com múltiplas funções.",
+      preco: 299.50,
+      imagem: "https://images.unsplash.com/photo-1519741492763-c9df6d96bc7c?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 3,
+      nome: "Mochila Casual",
+      descricao: "Mochila estilosa e prática para uso diário.",
+      preco: 120.00,
+      imagem: ""
+    },
+    {
+      id: 4,
+      nome: "Fones de Ouvido",
+      descricao: "Fones com cancelamento de ruído e som de alta qualidade.",
+      preco: 220.45,
+      imagem: "https://images.unsplash.com/photo-1517263904808-5f16f9983d4f?auto=format&fit=crop&w=400&q=80"
+    }
+  ];
+
+  const produtosEl = document.getElementById("produtos");
+  const carrinhoItensEl = document.getElementById("carrinho-itens");
+  const carrinhoTotalEl = document.getElementById("carrinho-total");
+  const modal = document.getElementById("modal");
+  const modalCloseBtn = document.getElementById("modal-close");
+  const modalImg = document.getElementById("modal-img");
+  const modalNome = document.getElementById("modal-nome");
+  const modalDesc = document.getElementById("modal-desc");
+  const modalPreco = document.getElementById("modal-preco");
+  const modalAdicionar = document.getElementById("modal-adicionar");
+
+  let carrinho = [];
+  let produtoSelecionado = null;
+
+  function renderizarProdutos() {
+    produtosEl.innerHTML = "";
+    produtos.forEach(prod => {
+      const div = document.createElement("div");
+      div.className = "produto";
+      div.innerHTML = `
+        <img src="${prod.imagem}" alt="${prod.nome}" />
+        <h3>${prod.nome}</h3>
+        <p>${prod.descricao.substring(0, 55)}...</p>
+        <button>Ver detalhes</button>
+      `;
+      div.querySelector("button").addEventListener("click", () => abrirModal(prod));
+      div.querySelector("img").addEventListener("click", () => abrirModal(prod));
+      div.querySelector("h3").addEventListener("click", () => abrirModal(prod));
+      produtosEl.appendChild(div);
+    });
+  }
+
+  function abrirModal(prod) {
+    produtoSelecionado = prod;
+    modalImg.src = prod.imagem;
+    modalNome.textContent = prod.nome;
+    modalDesc.textContent = prod.descricao;
+    modalPreco.textContent = prod.preco.toFixed(2);
+    modal.classList.add("active");
+  }
+
+  modalCloseBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+    produtoSelecionado = null;
+  });
+  modal.addEventListener("click", e => {
+    if(e.target === modal){
+      modal.classList.remove("active");
+      produtoSelecionado = null;
+    }
+  });
+
+  modalAdicionar.addEventListener("click", () => {
+    if(!produtoSelecionado) return;
+    const item = carrinho.find(i => i.id === produtoSelecionado.id);
+    if(item){
+      item.quantidade++;
+    } else {
+      carrinho.push({...produtoSelecionado, quantidade: 1});
+    }
+    atualizarCarrinho();
+    modal.classList.remove("active");
+  });
+
+  function atualizarCarrinho() {
+    carrinhoItensEl.innerHTML = "";
+    let total = 0;
+
+    carrinho.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "item-carrinho";
+      div.innerHTML = `
+        <span>${item.nome} x${item.quantidade} - R$ ${(item.preco * item.quantidade).toFixed(2)}</span>
+        <button>&times;</button>
+      `;
+      div.querySelector("button").addEventListener("click", () => {
+        removerDoCarrinho(item.id);
+      });
+      carrinhoItensEl.appendChild(div);
+      total += item.preco * item.quantidade;
+    });
+
+    carrinhoTotalEl.textContent = `Total: R$ ${total.toFixed(2)}`;
+  }
+
+  function removerDoCarrinho(id) {
+    carrinho = carrinho
+      .map(item => item.id === id ? {...item, quantidade: item.quantidade - 1} : item)
+      .filter(item => item.quantidade > 0);
+    atualizarCarrinho();
+  }
+
+  renderizarProdutos();
+  atualizarCarrinho();
+
+</script>
+
+</body>
+</html>
