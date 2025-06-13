@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loja Online</title>
+
+<!-- Fonte Google Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* Cabeçalho com título */
+  header {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-weight: 700;
+    font-size: 2rem;
+    color: #007bff;
+    user-select: none;
+  }
+
+  /* Container geral - produto à esquerda, carrinho à direita */
+  .container {
+    flex: 1;
+    display: flex;
+    padding: 30px;
+    gap: 40px;
+    max-width: 1200px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+  
+  /* Lista de produtos */
+  .produtos {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+    gap: 25px;
+  }
+
+  /* Resto do CSS continua igual */
+  .produto {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .produto:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+  .produto img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
+  .produto h3 {
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .produto p {
+    margin: 0 0 12px;
+    color: #666;
+    font-size: 0.9rem;
+    min-height: 40px;
+    text-align: center;
+  }
+  .produto button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  .produto button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Carrinho fixo no topo direito */
+  .carrinho-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    padding: 20px;
+    z-index: 1000;
+    font-size: 14px;
+  }
+  .carrinho-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .carrinho-header img {
+    width: 30px;
+    height: 30px;
+  }
+  .carrinho-header h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .item-carrinho {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+  .item-carrinho span {
+    flex-grow: 1;
+  }
+  .item-carrinho button {
+    background-color: #dc3545;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .item-carrinho button:hover {
+    background-color: #a71d2a;
+  }
+  .total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 15px;
+    text-align: right;
+  }
+
+  /* Modal detalhes do produto */
+  .modal {
+    position: fixed;
+    top: 0; left: 0; right:0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+  }
+  .modal.active {
+    display: flex;
+  }
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    padding: 25px;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+  .modal-content img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 20px;
+  }
+  .modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+  .modal-content p {
+    color: #555;
+    margin-bottom: 20px;
+  }
+  .modal-content button {
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 12px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  .modal-content button:hover {
+    background-color: #1e7e34;
+  }
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #dc3545;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    line-height: 0;
+    transition: background-color 0.3s ease;
+  }
+  .close-btn:hover {
+    background-color: #a71d2a;
+  }
+</style>
+</head>
+<body>
+
+<header>Loja Online</header>
+
+<div class="container">
+  <div class="produtos" id="produtos"></div>
+</div>
+
+<!-- Carrinho fixo -->
+<div class="carrinho-container" id="carrinho-container">
+  <div class="carrinho-header">
+    <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Carrinho" />
+    <h2>Carrinho</h2>
+  </div>
+  <div id="carrinho-itens"></div>
+  <div class="total" id="carrinho-total">Total: R$ 0,00</div>
+</div>
+
+<!-- Modal de detalhes -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close-btn" id="modal-close">&times;</button>
+    <img id="modal-img" src="" alt="Imagem do produto" />
+    <h3 id="modal-nome"></h3>
+    <p id="modal-desc"></p>
+    <p><strong>Preço: </strong>R$ <span id="modal-preco"></span></p>
+    <button id="modal-adicionar">Adicionar ao Carrinho</button>
+  </div>
+</div>
+
+<script>
+  // Código JavaScript permanece o mesmo
+  const produtos = [
+    {
+      id: 1,
+      nome: "Tênis Esportivo",
+      descricao: "Tênis confortável para corrida e atividades físicas.",
+      preco: 150.99,
+      imagem: "https://images.unsplash.com/photo-1528701800489-276a1b3f1e72?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 2,
+      nome: "Relógio Digital",
+      descricao: "Relógio resistente à água, com múltiplas funções.",
+      preco: 299.50,
+      imagem: "https://images.unsplash.com/photo-1519741492763-c9df6d96bc7c?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 3,
+      nome: "Mochila Casual",
+      descricao: "Mochila estilosa e prática para uso diário.",
+      preco: 120.00,
+      imagem: ""
+    },
+    {
+      id: 4,
+      nome: "Fones de Ouvido",
+      descricao: "Fones com cancelamento de ruído e som de alta qualidade.",
+      preco: 220.45,
+      imagem: "https://images.unsplash.com/photo-1517263904808-5f16f9983d4f?auto=format&fit=crop&w=400&q=80"
+    }
+  ];
+
+  const produtosEl = document.getElementById("produtos");
+  const carrinhoItensEl = document.getElementById("carrinho-itens");
+  const carrinhoTotalEl = document.getElementById("carrinho-total");
+  const modal = document.getElementById("modal");
+  const modalCloseBtn = document.getElementById("modal-close");
+  const modalImg = document.getElementById("modal-img");
+  const modalNome = document.getElementById("modal-nome");
+  const modalDesc = document.getElementById("modal-desc");
+  const modalPreco = document.getElementById("modal-preco");
+  const modalAdicionar = document.getElementById("modal-adicionar");
+
+  let carrinho = [];
+  let produtoSelecionado = null;
+
+  function renderizarProdutos() {
+    produtosEl.innerHTML = "";
+    produtos.forEach(prod => {
+      const div = document.createElement("div");
+      div.className = "produto";
+      div.innerHTML = `
+        <img src="${prod.imagem}" alt="${prod.nome}" />
+        <h3>${prod.nome}</h3>
+        <p>${prod.descricao.substring(0, 55)}...</p>
+        <button>Ver detalhes</button>
+      `;
+      div.querySelector("button").addEventListener("click", () => abrirModal(prod));
+      div.querySelector("img").addEventListener("click", () => abrirModal(prod));
+      div.querySelector("h3").addEventListener("click", () => abrirModal(prod));
+      produtosEl.appendChild(div);
+    });
+  }
+
+  function abrirModal(prod) {
+    produtoSelecionado = prod;
+    modalImg.src = prod.imagem;
+    modalNome.textContent = prod.nome;
+    modalDesc.textContent = prod.descricao;
+    modalPreco.textContent = prod.preco.toFixed(2);
+    modal.classList.add("active");
+  }
+
+  modalCloseBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+    produtoSelecionado = null;
+  });
+  modal.addEventListener("click", e => {
+    if(e.target === modal){
+      modal.classList.remove("active");
+      produtoSelecionado = null;
+    }
+  });
+
+  modalAdicionar.addEventListener("click", () => {
+    if(!produtoSelecionado) return;
+    const item = carrinho.find(i => i.id === produtoSelecionado.id);
+    if(item){
+      item.quantidade++;
+    } else {
+      carrinho.push({...produtoSelecionado, quantidade: 1});
+    }
+    atualizarCarrinho();
+    modal.classList.remove("active");
+  });
+
+  function atualizarCarrinho() {
+    carrinhoItensEl.innerHTML = "";
+    let total = 0;
+
+    carrinho.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "item-carrinho";
+      div.innerHTML = `
+        <span>${item.nome} x${item.quantidade} - R$ ${(item.preco * item.quantidade).toFixed(2)}</span>
+        <button>&times;</button>
+      `;
+      div.querySelector("button").addEventListener("click", () => {
+        removerDoCarrinho(item.id);
+      });
+      carrinhoItensEl.appendChild(div);
+      total += item.preco * item.quantidade;
+    });
+
+    carrinhoTotalEl.textContent = `Total: R$ ${total.toFixed(2)}`;
+  }
+
+  function removerDoCarrinho(id) {
+    carrinho = carrinho
+      .map(item => item.id === id ? {...item, quantidade: item.quantidade - 1} : item)
+      .filter(item => item.quantidade > 0);
+    atualizarCarrinho();
+  }
+
+  renderizarProdutos();
+  atualizarCarrinho();
+
+</script>
+
+</body>
+</html>
